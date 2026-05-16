@@ -25,12 +25,14 @@ Automatisch generierter Wochendigest zu Digitalisierung, Regulierung und Innovat
 ## Website-Features
 
 - **Automatische KW-Erkennung** – lädt immer den neusten verfügbaren Digest
+- **Live-Marktdaten** – BTC/CHF (CoinGecko), SMI & SPI (Yahoo Finance), alle 5 Min. aktualisiert, Zeitraum-Toggle (1T/1W/1M/3M/1J/ALL) mit Sparkline-Chart
 - **Metrics Row** – 4 Kennzahlen aus verschiedenen Artikeln, verlinkt auf den jeweiligen Artikel
 - **Newspaper-Layout** – Lead Story, Minor Stories, 4-spaltige Sections
-- **Dark Mode** – Toggle, gespeichert in localStorage
-- **DE/EN** – alle Inhalte zweisprachig umschaltbar
+- **Dark Mode** – Toggle + automatische System-Erkennung (`prefers-color-scheme`), gespeichert in localStorage
+- **DE/EN** – alle Inhalte zweisprachig, automatische Browser-Spracherkennung beim ersten Besuch
 - **Tag-Filter** – klickbare Tags filtern Artikel seitenübergreifend
 - **Deeplinks** – alle Headlines verlinken auf die Originalquelle
+- **Impressum & Datenschutz** – nDSG-konforme Seiten unter `/impressum.html` und `/datenschutz.html`
 
 ## JSON-Format
 

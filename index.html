@@ -103,41 +103,51 @@ body {
 
 /* MARKET DATA ROW */
 .market-section {
-  background: #0f2744;
-  padding: 0.85rem 0;
-  border-bottom: 2px solid #1a3a5c;
+  background: #fff;
+  padding: 0.75rem 0;
+  border-bottom: 2px solid var(--border-light);
 }
 .market-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-  background: rgba(255,255,255,0.06);
+  background: var(--border-light);
 }
 .market-tile {
-  background: #0f2744; padding: 0.75rem 1.25rem;
-  display: flex; align-items: center; gap: 1.1rem;
+  background: #fff; padding: 0.8rem 1.1rem 0.6rem;
+  display: flex; flex-direction: column; gap: 0.3rem;
 }
-.market-tile-info { flex: 1; min-width: 0; }
+.market-top-row { display: flex; justify-content: space-between; align-items: baseline; }
 .market-symbol {
   font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em;
-  text-transform: uppercase; color: rgba(180,210,255,0.6); margin-bottom: 0.2rem;
+  text-transform: uppercase; color: var(--text-light);
 }
+.market-updated {
+  font-family: var(--font-mono); font-size: 0.5rem;
+  color: var(--text-light); letter-spacing: 0.04em; opacity: 0.55;
+}
+.market-mid-row { display: flex; justify-content: space-between; align-items: baseline; }
 .market-value {
-  font-family: var(--font-body); font-size: 1.35rem; font-weight: bold;
-  color: #fff; line-height: 1.1; margin-bottom: 0.18rem;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-family: var(--font-body); font-size: 1.4rem; font-weight: bold;
+  color: var(--text); line-height: 1.1;
 }
 .market-change {
   font-family: var(--font-mono); font-size: 0.65rem; font-weight: bold;
   letter-spacing: 0.06em;
 }
-.market-change.up { color: #5db87a; }
-.market-change.down { color: #e05555; }
-.market-change.flat { color: rgba(180,210,255,0.45); }
-.market-updated {
-  font-family: var(--font-mono); font-size: 0.52rem;
-  color: rgba(180,210,255,0.3); margin-top: 0.15rem; letter-spacing: 0.04em;
+.market-change.up { color: #2e8b57; }
+.market-change.down { color: var(--red); }
+.market-change.flat { color: var(--text-light); }
+.market-chart { width: 100%; margin: 0.2rem 0 0.1rem; }
+.market-chart svg { width: 100%; height: 52px; display: block; }
+.market-ranges {
+  display: flex; gap: 2px; margin-top: 0.15rem;
 }
-.market-chart { flex-shrink: 0; }
-.market-chart svg { display: block; }
+.mkt-range-btn {
+  font-family: var(--font-mono); font-size: 0.52rem; letter-spacing: 0.06em;
+  background: none; border: 1px solid var(--border-light); color: var(--text-light);
+  padding: 1px 5px; cursor: pointer; transition: all 0.12s;
+}
+.mkt-range-btn:hover { border-color: var(--gold); color: var(--gold); }
+.mkt-range-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 
 /* METRICS ROW */
 .metrics-section { padding: 1.5rem 0; border-bottom: 1px solid var(--border-light); }
@@ -446,7 +456,11 @@ footer a:hover { text-decoration: underline; }
 
   <footer>
     <span id="footer-gen"></span>
-    <a href="https://banking.multikanal.ch" target="_blank" rel="noopener">banking.multikanal.ch ↗</a>
+    <span>
+      <a href="/impressum.html">Impressum</a> ·
+      <a href="/datenschutz.html">Datenschutz</a> ·
+      <a href="https://banking.multikanal.ch" target="_blank" rel="noopener">banking.multikanal.ch ↗</a>
+    </span>
   </footer>
 
 </div>
@@ -496,7 +510,9 @@ function esc(s) {
 
 /* ── THEME ── */
 function initTheme() {
-  const saved = localStorage.getItem('mk_theme') || 'light';
+  // localStorage hat Priorität; sonst System-Präferenz
+  const saved = localStorage.getItem('mk_theme')
+    || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   applyTheme(saved);
 }
 function applyTheme(t) {
@@ -510,8 +526,21 @@ function toggleTheme() {
 }
 
 /* ── LANGUAGE ── */
+function initLang() {
+  // localStorage hat Priorität; sonst Browser-Sprache
+  const saved = localStorage.getItem('mk_lang');
+  if (saved) { currentLang = saved; }
+  else {
+    const browserLang = (navigator.language || 'de').toLowerCase();
+    currentLang = browserLang.startsWith('de') ? 'de' : 'en';
+  }
+  document.getElementById('btn-de').classList.toggle('active', currentLang === 'de');
+  document.getElementById('btn-en').classList.toggle('active', currentLang === 'en');
+  document.documentElement.lang = currentLang;
+}
 function setLang(lang) {
   currentLang = lang;
+  localStorage.setItem('mk_lang', lang);
   document.documentElement.lang = lang;
   document.getElementById('btn-de').classList.toggle('active', lang === 'de');
   document.getElementById('btn-en').classList.toggle('active', lang === 'en');
@@ -784,38 +813,30 @@ async function loadDigest() {
 }
 
 /* ── MARKET DATA ── */
+/* —— MARKET DATA —— */
 function sparklineSVG(points, up) {
-  if (!points || points.length < 2) return '';
-  const w = 80, h = 36, pad = 2;
+  if (!points || points.length < 2) return '<svg width="100%" height="52"></svg>';
+  const w = 300, h = 52, pad = 2;
   const min = Math.min(...points), max = Math.max(...points);
-  const range = max - min || 1;
+  const rng = max - min || 1;
   const xs = points.map((_, i) => pad + (i / (points.length - 1)) * (w - pad * 2));
-  const ys = points.map(v => h - pad - ((v - min) / range) * (h - pad * 2));
-  const poly = xs.map((x, i) => `${x},${ys[i]}`).join(' ');
-  const fill = `${xs[0]},${h} ` + poly + ` ${xs[xs.length-1]},${h}`;
-  const color = up ? '#5db87a' : '#e05555';
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
-    <polygon points="${fill}" fill="${color}" opacity="0.15"/>
-    <polyline points="${poly}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>
+  const ys = points.map(v => h - pad - ((v - min) / rng) * (h - pad * 2));
+  const poly = xs.map((x, i) => `${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' ');
+  const fill = `${xs[0].toFixed(1)},${h} ` + poly + ` ${xs[xs.length-1].toFixed(1)},${h}`;
+  const color = up ? '#2e8b57' : '#c0392b';
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <polygon points="${fill}" fill="${color}" opacity="0.12"/>
+    <polyline points="${poly}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
   </svg>`;
 }
 
-function renderMarketTile(id, symbol, label, value, change, points) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const pct = change !== null ? (change >= 0 ? '+' : '') + change.toFixed(2) + '%' : 'N/V';
-  const cls = change === null ? 'flat' : change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
-  const up = change === null ? true : change >= 0;
-  const now = new Date().toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' });
-  el.innerHTML = `
-    <div class="market-tile-info">
-      <div class="market-symbol">${label}</div>
-      <div class="market-value">${value}</div>
-      <div class="market-change ${cls}">${cls === 'up' ? '▲' : cls === 'down' ? '▼' : '–'} ${pct}</div>
-      <div class="market-updated">${now}</div>
-    </div>
-    <div class="market-chart">${sparklineSVG(points, up)}</div>`;
-}
+const MKT_RANGES = ['1T','1W','1M','3M','1J','ALL'];
+const MKT_RANGE_LABEL = { '1T':'24h','1W':'7T','1M':'1M','3M':'3M','1J':'1J','ALL':'Gesamt' };
+const mktState = {
+  'mkt-btc': { range: '1W' },
+  'mkt-smi': { range: '1W' },
+  'mkt-spi': { range: '1W' }
+};
 
 function fmtChf(n) {
   return n >= 1000
@@ -823,51 +844,104 @@ function fmtChf(n) {
     : n.toLocaleString('de-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-async function loadBTC() {
-  try {
-    const [price, hist] = await Promise.all([
-      fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=chf&include_24hr_change=true').then(r => r.json()),
-      fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=chf&days=7&interval=daily').then(r => r.json())
-    ]);
-    const val = price.bitcoin.chf;
-    const chg = price.bitcoin.chf_24h_change;
-    const pts = (hist.prices || []).map(p => p[1]);
-    renderMarketTile('mkt-btc', 'BTC', 'BTC / CHF', 'CHF ' + fmtChf(val), chg, pts);
-  } catch { renderMarketTile('mkt-btc', 'BTC', 'BTC / CHF', 'N/V', null, []); }
+function renderMarketTile(id, label, value, change, points, range) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const pct = change !== null ? (change >= 0 ? '+' : '') + change.toFixed(2) + '%' : 'N/V';
+  const cls = change === null ? 'flat' : change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
+  const up = change === null ? true : change >= 0;
+  const now = new Date().toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' });
+  const rangeLbl = MKT_RANGE_LABEL[range] || range;
+  const btns = MKT_RANGES.map(r =>
+    `<button class="mkt-range-btn${r === range ? ' active' : ''}" data-id="${id}" data-range="${r}">${r}</button>`
+  ).join('');
+  el.innerHTML = `
+    <div class="market-top-row">
+      <div class="market-symbol">${label}</div>
+      <div class="market-updated">${now}</div>
+    </div>
+    <div class="market-mid-row">
+      <div class="market-value">${value}</div>
+      <div class="market-change ${cls}">${cls==='up'?'▲':cls==='down'?'▼':'–'} ${pct} <span style="font-weight:normal;opacity:0.6">(${rangeLbl})</span></div>
+    </div>
+    <div class="market-chart">${sparklineSVG(points, up)}</div>
+    <div class="market-ranges">${btns}</div>`;
 }
 
-async function loadYahoo(id, ticker, label) {
-  const urls = [
-    `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1d&range=8d`,
-    `https://corsproxy.io/?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=8d`)}`
-  ];
+const CG_DAYS = { '1T':'1','1W':'7','1M':'30','3M':'90','1J':'365','ALL':'max' };
+const CG_INTERVAL = { '1T':'hourly','1W':'daily','1M':'daily','3M':'daily','1J':'daily','ALL':'weekly' };
+
+async function fetchBTC(range) {
+  const el = document.getElementById('mkt-btc');
+  if (el) el.style.opacity = '0.5';
+  const days = CG_DAYS[range] || '7';
+  const interval = CG_INTERVAL[range] || 'daily';
+  try {
+    const [price, hist] = await Promise.all([
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=chf&include_24hr_change=true').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+      fetch(`https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=chf&days=${days}&interval=${interval}`).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    ]);
+    const val = price.bitcoin.chf;
+    const pts = (hist.prices || []).map(p => p[1]);
+    const first = pts[0], last = pts[pts.length - 1];
+    const chg = first ? ((last - first) / first) * 100 : price.bitcoin.chf_24h_change;
+    renderMarketTile('mkt-btc', 'BTC / CHF', 'CHF ' + fmtChf(val), chg, pts, range);
+  } catch(e) {
+    const msg = String(e).includes('429') ? 'Limit erreicht – kurz warten' : 'N/V';
+    renderMarketTile('mkt-btc', 'BTC / CHF', msg, null, [], range);
+  } finally {
+    if (el) el.style.opacity = '1';
+  }
+}
+
+const YF_RANGE = { '1T':'1d','1W':'5d','1M':'1mo','3M':'3mo','1J':'1y','ALL':'10y' };
+const YF_INTERVAL = { '1T':'15m','1W':'1d','1M':'1d','3M':'1d','1J':'1wk','ALL':'1mo' };
+
+async function fetchYahoo(id, ticker, label, range) {
+  const r = YF_RANGE[range] || '5d', iv = YF_INTERVAL[range] || '1d';
+  const base = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=${iv}&range=${r}`;
+  const urls = [base, `https://corsproxy.io/?url=${encodeURIComponent(base)}`];
   for (const url of urls) {
     try {
       const data = await fetch(url).then(r => r.json());
       const res = data.chart.result[0];
-      const closes = res.indicators.quote[0].close.filter(Boolean);
+      const closes = res.indicators.quote[0].close.filter(v => v != null);
       const last = closes[closes.length - 1];
-      const prev = closes[closes.length - 2];
-      const chg = prev ? ((last - prev) / prev) * 100 : null;
-      renderMarketTile(id, ticker, label, fmtChf(last), chg, closes);
+      const first = closes[0];
+      const chg = first ? ((last - first) / first) * 100 : null;
+      renderMarketTile(id, label, fmtChf(last), chg, closes, range);
       return;
     } catch { /* try next */ }
   }
-  renderMarketTile(id, ticker, label, 'N/V', null, []);
+  renderMarketTile(id, label, 'N/V', null, [], range);
 }
 
 async function loadMarketData() {
+  const btcR = mktState['mkt-btc'].range;
+  const smiR = mktState['mkt-smi'].range;
+  const spiR = mktState['mkt-spi'].range;
   await Promise.allSettled([
-    loadBTC(),
-    loadYahoo('mkt-smi', '^SSMI', 'SMI'),
-    loadYahoo('mkt-spi', '^SPICHA', 'SPI')
+    fetchBTC(btcR),
+    fetchYahoo('mkt-smi', '^SSMI', 'SMI', smiR),
+    fetchYahoo('mkt-spi', '^SPICHA', 'SPI', spiR)
   ]);
 }
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.mkt-range-btn');
+  if (!btn) return;
+  const id = btn.dataset.id, range = btn.dataset.range;
+  mktState[id].range = range;
+  if (id === 'mkt-btc') fetchBTC(range);
+  else if (id === 'mkt-smi') fetchYahoo('mkt-smi', '^SSMI', 'SMI', range);
+  else if (id === 'mkt-spi') fetchYahoo('mkt-spi', '^SPICHA', 'SPI', range);
+});
 
 loadMarketData();
 setInterval(loadMarketData, 5 * 60 * 1000); // alle 5 Min aktualisieren
 
 initTheme();
+initLang();
 loadDigest();
 </script>
 </body>
