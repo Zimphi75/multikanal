@@ -11,81 +11,162 @@
   --font-body: Georgia, 'Times New Roman', serif;
   --font-mono: 'Courier New', Courier, monospace;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.6; }
-.site-header {
-  border-bottom: 2px solid var(--border); padding: 1rem 2rem 0.75rem;
-  display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+[data-theme="dark"] {
+  --bg: #141210; --text: #e0dbd2; --text-mid: #b0a898; --text-light: #a09070;
+  --border: #3a3530; --border-light: #2a2520;
 }
-.site-title { font-size: 1.2rem; font-weight: bold; letter-spacing: -0.02em; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.6; transition: background 0.2s, color 0.2s; }
+.site-header {
+  border-bottom: 2px solid var(--border); padding: 0.9rem 2rem;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
+}
+.back-link {
+  font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-light); text-decoration: none;
+  border: 1px solid var(--border-light); padding: 0.3rem 0.7rem;
+  transition: all 0.15s;
+}
+.back-link:hover { color: var(--gold); border-color: var(--gold); }
+.site-title { font-size: 1.1rem; font-weight: bold; letter-spacing: -0.02em; }
 .site-title span { color: var(--gold); }
-.back-link { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); text-decoration: none; }
-.back-link:hover { color: var(--gold); }
+.header-controls { display: flex; gap: 0.4rem; align-items: center; }
+.toggle-btn {
+  font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em;
+  text-transform: uppercase; background: none;
+  border: 1px solid var(--border-light); padding: 0.28rem 0.6rem;
+  cursor: pointer; color: var(--text-light); transition: all 0.15s;
+}
+.toggle-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+.toggle-btn:hover:not(.active) { color: var(--text); border-color: var(--text); }
+.icon-btn {
+  font-size: 0.9rem; background: none; border: 1px solid var(--border-light);
+  padding: 0.28rem 0.55rem; cursor: pointer; color: var(--text); transition: all 0.15s;
+}
+.icon-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
 .container { max-width: 720px; margin: 0 auto; padding: 3rem 2rem 4rem; }
 h1 { font-size: 1.6rem; font-weight: bold; margin-bottom: 0.4rem; }
-.subtitle { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-light); margin-bottom: 2.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-light); }
-h2 { font-size: 0.75rem; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-light); margin: 2rem 0 0.6rem; }
-p { font-size: 0.92rem; color: var(--text-mid); margin-bottom: 0.75rem; }
+.subtitle {
+  font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-light);
+  margin-bottom: 2.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-light);
+}
+h2 {
+  font-size: 0.72rem; font-family: var(--font-mono); letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-light); margin: 2rem 0 0.6rem;
+}
+p { font-size: 0.97rem; color: var(--text-mid); margin-bottom: 0.75rem; line-height: 1.7; }
 a { color: var(--gold); }
-footer { padding: 0.9rem 2rem; border-top: 1px solid var(--border-light); font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-light); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
-footer a { color: var(--gold); text-decoration: none; }
+footer {
+  padding: 1.2rem 2rem; border-top: 1px solid var(--border-light);
+  font-family: var(--font-mono); font-size: 0.78rem;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-mid);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;
+}
+footer a { color: var(--gold); text-decoration: none; font-weight: bold; }
+footer a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
 <header class="site-header">
+  <a href="/" class="back-link">
+    <span class="lang-de">← Zurück</span>
+    <span class="lang-en" hidden>← Back</span>
+  </a>
   <div class="site-title">Swiss Digital <span>Banking</span> Digest</div>
-  <a href="/" class="back-link">← Zurück zur Übersicht</a>
+  <div class="header-controls">
+    <button class="toggle-btn" id="btn-lang-de" onclick="setLang('de')">DE</button>
+    <button class="toggle-btn" id="btn-lang-en" onclick="setLang('en')">EN</button>
+    <button class="icon-btn" id="btn-theme" onclick="toggleTheme()">☾</button>
+  </div>
 </header>
 
 <div class="container">
-  <h1>Impressum</h1>
-  <div class="subtitle">banking.multikanal.ch</div>
 
-  <h2>Verantwortlich für den Inhalt</h2>
-  <p>
-    Philipp Zimmermann<br>
-    Schweiz<br>
-    E-Mail: <a href="mailto:info@multikanal.ch">info@multikanal.ch</a>
-  </p>
+  <div class="lang-de">
+    <h1>Impressum</h1>
+    <div class="subtitle">banking.multikanal.ch</div>
 
-  <h2>Website</h2>
-  <p>
-    <a href="https://banking.multikanal.ch">banking.multikanal.ch</a><br>
-    Hosting: GitHub Pages (GitHub, Inc., 88 Colin P. Kelly Jr. St., San Francisco, CA 94107, USA)
-  </p>
+    <h2>Verantwortlich für den Inhalt</h2>
+    <p>Philipp Zimmermann<br>Schweiz<br>E-Mail: <a href="mailto:info@multikanal.ch">info@multikanal.ch</a></p>
 
-  <h2>Inhalt</h2>
-  <p>
-    Swiss Digital Banking Digest ist ein automatisch generierter Wochendigest zu Digitalisierung,
-    Regulierung und Innovation im Schweizer Bankensektor. Die Inhalte werden mittels n8n und
-    Claude Sonnet (Anthropic) auf Basis öffentlich zugänglicher Quellen erstellt.
-  </p>
-  <p>
-    Alle Inhalte dienen ausschliesslich zu Informationszwecken und stellen keine Anlage-,
-    Rechts- oder sonstige Fachberatung dar.
-  </p>
+    <h2>Website</h2>
+    <p><a href="https://banking.multikanal.ch">banking.multikanal.ch</a><br>
+    Hosting: GitHub Pages (GitHub, Inc., 88 Colin P. Kelly Jr. St., San Francisco, CA 94107, USA)</p>
 
-  <h2>Haftungsausschluss</h2>
-  <p>
-    Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte
-    externer Links. Für den Inhalt der verlinkten Seiten sind ausschliesslich deren Betreiber
-    verantwortlich.
-  </p>
+    <h2>Inhalt</h2>
+    <p>Swiss Digital Banking Digest ist ein automatisch generierter Wochendigest zu Digitalisierung, Regulierung und Innovation im Schweizer Bankensektor. Die Inhalte werden mittels n8n und Claude Sonnet (Anthropic) auf Basis öffentlich zugänglicher Quellen erstellt.</p>
+    <p>Alle Inhalte dienen ausschliesslich zu Informationszwecken und stellen keine Anlage-, Rechts- oder sonstige Fachberatung dar.</p>
 
-  <h2>Urheberrecht</h2>
-  <p>
-    Die auf dieser Website veröffentlichten Inhalte unterliegen dem Schweizer Urheberrecht.
-    Jede vom Urheberrecht nicht zugelassene Verwendung bedarf der vorherigen schriftlichen
-    Zustimmung des Inhabers.
-  </p>
+    <h2>Haftungsausschluss</h2>
+    <p>Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschliesslich deren Betreiber verantwortlich.</p>
+
+    <h2>Urheberrecht</h2>
+    <p>Die auf dieser Website veröffentlichten Inhalte unterliegen dem Schweizer Urheberrecht. Jede vom Urheberrecht nicht zugelassene Verwendung bedarf der vorherigen schriftlichen Zustimmung des Inhabers.</p>
+  </div>
+
+  <div class="lang-en" hidden>
+    <h1>Legal Notice</h1>
+    <div class="subtitle">banking.multikanal.ch</div>
+
+    <h2>Responsible for Content</h2>
+    <p>Philipp Zimmermann<br>Switzerland<br>Email: <a href="mailto:info@multikanal.ch">info@multikanal.ch</a></p>
+
+    <h2>Website</h2>
+    <p><a href="https://banking.multikanal.ch">banking.multikanal.ch</a><br>
+    Hosting: GitHub Pages (GitHub, Inc., 88 Colin P. Kelly Jr. St., San Francisco, CA 94107, USA)</p>
+
+    <h2>Content</h2>
+    <p>Swiss Digital Banking Digest is an automatically generated weekly digest on digitalisation, regulation, and innovation in the Swiss banking sector. Content is created using n8n and Claude Sonnet (Anthropic) based on publicly available sources.</p>
+    <p>All content is for informational purposes only and does not constitute investment, legal, or other professional advice.</p>
+
+    <h2>Disclaimer</h2>
+    <p>Despite careful review, we accept no liability for the content of external links. The operators of linked pages are solely responsible for their content.</p>
+
+    <h2>Copyright</h2>
+    <p>The content published on this website is subject to Swiss copyright law. Any use not permitted by copyright law requires prior written consent from the rights holder.</p>
+  </div>
+
 </div>
 
 <footer>
   <span>banking.multikanal.ch</span>
   <span>
-    <a href="/datenschutz.html">Datenschutz</a> ·
-    <a href="/">Digest</a>
+    <a href="/datenschutz.html" class="lang-de">Datenschutz</a>
+    <a href="/datenschutz.html" class="lang-en" hidden>Privacy Policy</a>
+    ·
+    <a href="/">Digest ↗</a>
   </span>
 </footer>
+
+<script>
+function initTheme() {
+  const saved = localStorage.getItem('mk_theme');
+  const pref = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  applyTheme(saved || pref);
+}
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  localStorage.setItem('mk_theme', t);
+  document.getElementById('btn-theme').textContent = t === 'dark' ? '☀' : '☾';
+}
+function toggleTheme() {
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+}
+function initLang() {
+  const saved = localStorage.getItem('mk_lang');
+  const pref = navigator.language?.toLowerCase().startsWith('de') ? 'de' : 'en';
+  setLang(saved || pref);
+}
+function setLang(l) {
+  localStorage.setItem('mk_lang', l);
+  document.querySelectorAll('.lang-de').forEach(el => el.hidden = l !== 'de');
+  document.querySelectorAll('.lang-en').forEach(el => el.hidden = l !== 'en');
+  document.getElementById('btn-lang-de').classList.toggle('active', l === 'de');
+  document.getElementById('btn-lang-en').classList.toggle('active', l === 'en');
+}
+initTheme();
+initLang();
+</script>
 </body>
 </html>
