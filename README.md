@@ -28,7 +28,7 @@ Automatisch generierter Wochendigest zu Digitalisierung, Regulierung und Innovat
 - **Automatische KW-Erkennung** – lädt immer den neusten verfügbaren Digest
 - **Live-Marktdaten** – BTC/CHF (CoinGecko), SMI & SPI (Yahoo Finance), alle 5 Min. aktualisiert; BTC mit Zeitraum-Toggle (1T/1W/1M) und Sparkline-Chart, SMI/SPI fix auf 1T
 - **Metrics Row** – 4 Kennzahlen aus verschiedenen Artikeln, verlinkt auf den jeweiligen Artikel
-- **Newspaper-Layout** – Lead Story, Minor Stories, 2×2-Spalten-Layout (CSS Subgrid, pixelgenaue Zeilenausrichtung)
+- **Newspaper-Layout** – Lead Story, Minor Stories, 2×2-Spalten-Layout (CSS Subgrid, pixelgenaue Zeilenausrichtung); alle Sektions- und Bereichstitel einheitlich gross (Monospace, 1.45rem)
 - **Leseempfehlungen** – nummeriert mit grossen goldenen Ziffern, verlinkt auf Originalquellen
 - **Strategische Implikationen** – Zielgruppe, Fliesstext und priorisierte Massnahmen
 - **Dark Mode** – Toggle + automatische System-Erkennung (`prefers-color-scheme`), gespeichert in localStorage
