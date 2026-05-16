@@ -101,7 +101,20 @@ body { font-family: 'IBM Plex Sans', sans-serif; background: var(--cream); color
 .item-card p { font-size: 0.78rem; color: var(--ink-light); line-height: 1.65; font-weight: 300; }
 .item-source { font-size: 0.62rem; font-weight: 500; color: var(--ink-light); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.3rem; display: block; }
 .item-tags { margin-top: 0.35rem; display: flex; flex-wrap: wrap; gap: 0.25rem; }
-.item-tag { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: rgba(232,64,10,0.07); padding: 2px 5px; }
+.item-tag { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: rgba(232,64,10,0.07); padding: 2px 5px; cursor: pointer; transition: background 0.15s, color 0.15s; }
+.item-tag:hover, .item-tag.active { background: var(--accent); color: var(--white); }
+.story-lead h2 a, .story-minor h3 a, .item-card h4 a { color: inherit; text-decoration: none; }
+.story-lead h2 a:hover, .story-minor h3 a:hover, .item-card h4 a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.lang-toggle { display: flex; border: 1px solid rgba(255,255,255,0.18); overflow: hidden; margin-left: 1.25rem; }
+.lang-btn { background: none; border: none; color: rgba(255,255,255,0.45); font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; padding: 0.25rem 0.65rem; cursor: pointer; transition: all 0.2s; }
+.lang-btn.active { background: var(--accent); color: var(--white); }
+.lang-btn:hover:not(.active) { color: var(--white); background: rgba(255,255,255,0.08); }
+.filter-bar { background: rgba(232,64,10,0.07); border-left: 3px solid var(--accent); padding: 0.5rem 1rem; margin-bottom: 1.5rem; font-size: 0.72rem; color: var(--ink-mid); align-items: center; gap: 0.5rem; display: none; }
+.filter-bar.visible { display: flex; }
+.filter-clear { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.72rem; font-weight: 700; padding: 0; margin-left: auto; letter-spacing: 0.04em; }
+.item-card .key-figures { margin-top: 0.5rem; }
+.item-card .key-fig { padding: 0.3rem 0.6rem; }
+.item-card .key-fig-val { font-size: 0.82rem; }
 
 /* BOTTOM ROW */
 .bottom-row { display: grid; grid-template-columns: 1fr 1.25fr; padding: 2.5rem 0 3rem; }
@@ -166,7 +179,13 @@ footer a:hover { text-decoration: underline; }
   <header class="masthead">
     <div class="masthead-top">
       <span class="masthead-kicker">Swiss Digital Banking Digest</span>
-      <span class="masthead-sources">Quellen: FINMA · SNB · Fintechnews.ch · HSLU</span>
+      <div style="display:flex;align-items:center;">
+        <span class="masthead-sources">Quellen: FINMA · SNB · Fintechnews.ch · HSLU</span>
+        <div class="lang-toggle">
+          <button class="lang-btn active" id="btn-de">DE</button>
+          <button class="lang-btn" id="btn-en">EN</button>
+        </div>
+      </div>
     </div>
     <div class="masthead-main">
       <div>
@@ -203,6 +222,10 @@ footer a:hover { text-decoration: underline; }
 
   <section>
     <div class="container">
+      <div class="filter-bar" id="filter-bar">
+        <span id="filter-label"></span>
+        <button class="filter-clear" id="filter-clear">× Filter entfernen</button>
+      </div>
       <div class="sections-grid" id="sections-grid"></div>
     </div>
   </section>
@@ -244,6 +267,14 @@ footer a:hover { text-decoration: underline; }
 <script>
 const REPO_BASE = 'https://raw.githubusercontent.com/Zimphi75/multikanal/main/data/';
 
+let currentLang = 'de';
+let activeTag = null;
+let globalData = null;
+
+function t(obj, key) {
+  return obj[`${key}_${currentLang}`] || obj[`${key}_de`] || '';
+}
+
 const SECTION_META = {
   regulatory: { label: 'Regulierung & Compliance', icon: '<path d="M8 1l1 3h3l-2.5 2 1 3L8 7.5 5.5 9l1-3L4 4h3z"/>' },
   market:     { label: 'Markt & Wettbewerb',       icon: '<path d="M1 13l3-5 3 2 3-6 3 4 2-3v8H1z"/>' },
@@ -253,6 +284,48 @@ const SECTION_META = {
 
 function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  if (globalData) rerender();
+}
+
+function rerender() {
+  document.getElementById('lead-story').innerHTML = '';
+  document.getElementById('minor-stories').innerHTML = '';
+  document.getElementById('sections-grid').innerHTML = '';
+  document.getElementById('reading-list').innerHTML = '';
+  document.getElementById('strategic-actions').innerHTML = '';
+  renderTopStories(globalData.top_stories || []);
+  renderSections(globalData.sections || []);
+  renderReading(globalData.reading_recommendations || []);
+  renderStrategic(globalData.strategic_implications || null);
+  if (activeTag) filterByTag(activeTag);
+}
+
+function filterByTag(tag) {
+  activeTag = tag;
+  document.querySelectorAll('.item-card[data-tags]').forEach(card => {
+    const tags = card.dataset.tags.split(',');
+    card.style.display = tags.includes(tag) ? '' : 'none';
+  });
+  document.querySelectorAll('.item-tag').forEach(el => {
+    el.classList.toggle('active', el.dataset.tag === tag);
+  });
+  const bar = document.getElementById('filter-bar');
+  bar.classList.add('visible');
+  document.getElementById('filter-label').textContent =
+    currentLang === 'de' ? `Gefiltert nach: ${tag}` : `Filtered by: ${tag}`;
+}
+
+function clearTagFilter() {
+  activeTag = null;
+  document.querySelectorAll('.item-card[data-tags]').forEach(card => card.style.display = '');
+  document.querySelectorAll('.item-tag').forEach(el => el.classList.remove('active'));
+  document.getElementById('filter-bar').classList.remove('visible');
 }
 
 function fmtDate(str) {
@@ -275,25 +348,31 @@ function renderTopStories(stories) {
   if (!stories?.length) return;
   const lead = stories[0];
   const kf = (lead.key_figures || []).slice(0,3).map(k =>
-    `<div class="key-fig"><span class="key-fig-val">${esc(k.value)}</span><span class="key-fig-label">${esc(k.label_de)}</span></div>`
+    `<div class="key-fig"><span class="key-fig-val">${esc(k.value)}</span><span class="key-fig-label">${esc(k[`label_${currentLang}`] || k.label_de)}</span></div>`
   ).join('');
+  const h2 = lead.source_url
+    ? `<a href="${esc(lead.source_url)}" target="_blank" rel="noopener">${esc(t(lead,'headline'))}</a>`
+    : esc(t(lead,'headline'));
   document.getElementById('lead-story').innerHTML =
     `<div class="story-rank-big">01</div>
-     <h2>${esc(lead.headline_de)}</h2>
-     <p>${esc(lead.body_de)}</p>
+     <h2>${h2}</h2>
+     <p>${esc(t(lead,'body'))}</p>
      ${kf ? `<div class="key-figures">${kf}</div>` : ''}
      <div class="story-meta">
-       <span class="story-cat">${esc(lead.category)}</span>
+       <span class="story-cat">${esc(t(lead,'category'))}</span>
        <span class="story-source-tag">${esc(lead.source_name)} · ${esc(lead.source_date)}</span>
      </div>`;
 
   const sb = document.getElementById('minor-stories');
   stories.slice(1).forEach((s, i) => {
+    const h3 = s.source_url
+      ? `<a href="${esc(s.source_url)}" target="_blank" rel="noopener">${esc(t(s,'headline'))}</a>`
+      : esc(t(s,'headline'));
     sb.innerHTML +=
       `<div class="story-minor">
-         <div class="story-rank-small">0${i+2} &nbsp;${esc(s.category)}</div>
-         <h3>${esc(s.headline_de)}</h3>
-         <p>${esc(s.body_de)}</p>
+         <div class="story-rank-small">0${i+2} &nbsp;${esc(t(s,'category'))}</div>
+         <h3>${h3}</h3>
+         <p>${esc(t(s,'body'))}</p>
          <span class="story-source-tag">${esc(s.source_name)} · ${esc(s.source_date)}</span>
        </div>`;
   });
@@ -304,24 +383,36 @@ function renderSections(sections) {
   ['regulatory','market','ai_tech','international'].forEach(id => {
     const sec = sections.find(s => s.id === id);
     if (!sec) return;
-    const meta = SECTION_META[id] || { label: sec.title_de || id, icon: '' };
+    const meta = SECTION_META[id] || { icon: '' };
     const col = document.createElement('div');
     col.className = 'section-col';
     col.id = id;
     const items = (sec.items || []).slice(0,4).map(item => {
-      const src = (item.sources || [])[0]?.name || '';
-      const tags = (item.tags || []).slice(0,3).map(t => `<span class="item-tag">${esc(t)}</span>`).join('');
-      return `<div class="item-card">
-        <h4>${esc(item.headline_de)}</h4>
-        <p>${esc(item.body_de)}</p>
-        ${src ? `<span class="item-source">${esc(src)}</span>` : ''}
-        ${tags ? `<div class="item-tags">${tags}</div>` : ''}
+      const srcObj = (item.sources || [])[0] || {};
+      const srcName = srcObj.name || '';
+      const srcUrl  = srcObj.url  || '';
+      const h4 = srcUrl
+        ? `<a href="${esc(srcUrl)}" target="_blank" rel="noopener">${esc(t(item,'headline'))}</a>`
+        : esc(t(item,'headline'));
+      const tagsArr = item.tags || [];
+      const tagHtml = tagsArr.slice(0,4).map(tag =>
+        `<span class="item-tag" data-tag="${esc(tag)}">${esc(tag)}</span>`
+      ).join('');
+      const kf = (item.key_figures || []).slice(0,3).map(k =>
+        `<div class="key-fig"><span class="key-fig-val">${esc(k.value)}</span><span class="key-fig-label">${esc(k[`label_${currentLang}`] || k.label_de)}</span></div>`
+      ).join('');
+      return `<div class="item-card" data-tags="${esc(tagsArr.join(','))}">
+        <h4>${h4}</h4>
+        <p>${esc(t(item,'body'))}</p>
+        ${srcName ? `<span class="item-source">${esc(srcName)}</span>` : ''}
+        ${kf ? `<div class="key-figures">${kf}</div>` : ''}
+        ${tagHtml ? `<div class="item-tags">${tagHtml}</div>` : ''}
       </div>`;
     }).join('');
     col.innerHTML =
       `<div class="section-header">
          <div class="section-icon"><svg viewBox="0 0 16 16" fill="white">${meta.icon}</svg></div>
-         <span class="section-title">${esc(meta.label)}</span>
+         <span class="section-title">${esc(t(sec,'title') || sec.title_de)}</span>
        </div>${items}`;
     grid.appendChild(col);
   });
@@ -330,7 +421,7 @@ function renderSections(sections) {
 function renderReading(items) {
   const el = document.getElementById('reading-list');
   (items || []).slice(0,5).forEach((item, i) => {
-    const title = item.title_de || item.title_en || '';
+    const title = t(item,'title') || '';
     const url = item.url || '#';
     el.innerHTML +=
       `<div class="reading-item">
@@ -345,17 +436,28 @@ function renderReading(items) {
 
 function renderStrategic(si) {
   if (!si) return;
-  if (si.target_de) document.getElementById('strategic-kicker').textContent = `Für ${si.target_de}`;
-  if (si.body_de)   document.getElementById('strategic-intro').textContent  = si.body_de;
+  const target = si[`target_${currentLang}`] || si.target_de || '';
+  const body   = si[`body_${currentLang}`]   || si.body_de   || '';
+  const forLabel = currentLang === 'de' ? 'Für' : 'For';
+  if (target) document.getElementById('strategic-kicker').textContent = `${forLabel} ${target}`;
+  if (body)   document.getElementById('strategic-intro').textContent  = body;
   const el = document.getElementById('strategic-actions');
   (si.key_actions || []).forEach(a => {
     el.innerHTML +=
       `<div class="action-item">
          <div class="action-bullet"></div>
-         <p>${esc(a.action_de)}</p>
+         <p>${esc(a[`action_${currentLang}`] || a.action_de)}</p>
        </div>`;
   });
 }
+
+document.addEventListener('click', e => {
+  const tagEl = e.target.closest('.item-tag');
+  if (tagEl) { const tag = tagEl.dataset.tag; tag === activeTag ? clearTagFilter() : filterByTag(tag); return; }
+  if (e.target.closest('#filter-clear')) { clearTagFilter(); return; }
+  if (e.target.closest('#btn-de')) { setLang('de'); return; }
+  if (e.target.closest('#btn-en')) { setLang('en'); return; }
+});
 
 // Calculate ISO week number
 function getISOWeek(date) {
@@ -409,6 +511,7 @@ async function loadDigest() {
     return;
   }
 
+  globalData = data;
   renderMeta(data.meta || {});
   renderTopStories(data.top_stories || []);
   renderSections(data.sections || []);
