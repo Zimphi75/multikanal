@@ -776,7 +776,9 @@ function renderAll(data) {
 
 function rerender() {
   document.getElementById('metrics-grid').innerHTML = '';
-  document.getElementById('lead-story').innerHTML = '';
+  // renderTopStories renames lead-story → story-0; reset before clearing
+  const leadEl = document.getElementById('lead-story') || document.getElementById('story-0');
+  if (leadEl) { leadEl.id = 'lead-story'; leadEl.innerHTML = ''; }
   document.getElementById('minor-stories').innerHTML = '';
   document.getElementById('sections-container').innerHTML = '';
   document.getElementById('reading-list').innerHTML = '';
