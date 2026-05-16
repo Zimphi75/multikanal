@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swiss Digital Banking Digest · multikanal.ch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent: #E8400A;
+  --navy: #0E1C2F;
+  --navy-mid: #1A2E47;
+  --cream: #F7F4EF;
+  --cream-dark: #EDE9E2;
+  --ink: #1A1714;
+  --ink-mid: #3D3832;
+  --ink-light: #6B6560;
+  --border: #D4CFC8;
+  --white: #FFFFFF;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: 'IBM Plex Sans', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.6; min-height: 100vh; }
+
+#loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; gap: 1.5rem; }
+.loader-bar { width: 200px; height: 2px; background: var(--border); position: relative; overflow: hidden; }
+.loader-bar::after { content: ''; position: absolute; left: -60%; width: 60%; height: 100%; background: var(--accent); animation: slide 1.2s ease-in-out infinite; }
+@keyframes slide { to { left: 100%; } }
+#loading p { font-family: 'Syne', sans-serif; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-light); }
+
+#error { display: none; text-align: center; padding: 4rem 2rem; }
+#error h2 { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+#error p { color: var(--ink-light); font-size: 0.9rem; }
+
+#content { display: none; }
+
+/* MASTHEAD */
+.masthead { background: var(--navy); color: var(--white); }
+.masthead-top { border-bottom: 1px solid rgba(255,255,255,0.08); padding: 0.75rem 2.5rem; display: flex; justify-content: space-between; align-items: center; }
+.masthead-kicker { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+.masthead-sources { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.masthead-main { padding: 2.5rem 2.5rem 0; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2rem; }
+.masthead-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 4.5vw, 3rem); line-height: 1.05; letter-spacing: -0.02em; }
+.masthead-logo span { color: var(--accent); }
+.masthead-sub { font-size: 0.8rem; color: rgba(255,255,255,0.4); font-weight: 300; margin-top: 0.5rem; font-style: italic; }
+.masthead-meta { text-align: right; padding-bottom: 0.25rem; }
+.kw-badge { display: inline-block; background: var(--accent); color: var(--white); font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; padding: 0.4rem 0.9rem; line-height: 1; }
+.kw-date { display: block; font-size: 0.68rem; color: rgba(255,255,255,0.35); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.5rem; }
+
+.nav-strip { background: var(--navy-mid); display: flex; overflow-x: auto; scrollbar-width: none; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 2rem; }
+.nav-strip::-webkit-scrollbar { display: none; }
+.nav-item { padding: 0.75rem 1.4rem; font-family: 'Syne', sans-serif; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.45); white-space: nowrap; border-right: 1px solid rgba(255,255,255,0.05); transition: color 0.2s, background 0.2s; text-decoration: none; }
+.nav-item:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; }
+
+/* TOP STORIES */
+.top-stories-wrap { padding: 3rem 0 2.5rem; border-bottom: 2px solid var(--ink); }
+.section-label { font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.top-grid { display: grid; grid-template-columns: 1.65fr 1fr; }
+.story-lead { padding-right: 2.5rem; border-right: 1px solid var(--border); }
+.story-rank-big { font-family: 'Syne', sans-serif; font-size: 5rem; font-weight: 800; color: var(--accent); opacity: 0.12; line-height: 1; margin-bottom: -0.8rem; }
+.story-lead h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.2rem, 2.2vw, 1.6rem); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; }
+.story-lead p { font-size: 0.92rem; color: var(--ink-mid); line-height: 1.75; font-weight: 300; }
+.story-meta { display: flex; align-items: center; gap: 0.75rem; margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.story-cat { font-size: 0.63rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); background: var(--accent); padding: 2px 7px; }
+.story-source-tag { font-size: 0.63rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-light); }
+.key-figures { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+.key-fig { background: var(--cream-dark); padding: 0.4rem 0.75rem; border-left: 2px solid var(--accent); }
+.key-fig-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.92rem; color: var(--ink); display: block; }
+.key-fig-label { font-size: 0.62rem; color: var(--ink-light); text-transform: uppercase; letter-spacing: 0.08em; }
+
+.stories-sidebar { padding-left: 2.5rem; display: flex; flex-direction: column; }
+.story-minor { padding: 1.1rem 0; border-bottom: 1px solid var(--border); flex: 1; }
+.story-minor:last-child { border-bottom: none; padding-bottom: 0; }
+.story-rank-small { font-family: 'Syne', sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.35rem; }
+.story-minor h3 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+.story-minor p { font-size: 0.78rem; color: var(--ink-light); line-height: 1.65; font-weight: 300; }
+.story-minor .story-source-tag { margin-top: 0.5rem; display: block; }
+
+/* SECTIONS GRID */
+.sections-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
+.section-col { padding: 2.5rem 0; border-right: 1px solid var(--border); }
+.section-col:nth-child(even) { border-right: none; padding-left: 2.5rem; }
+.section-col:nth-child(odd) { padding-right: 2.5rem; }
+
+.section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--ink); }
+.section-icon { width: 26px; height: 26px; background: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.section-icon svg { width: 13px; height: 13px; fill: white; }
+.section-title { font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+
+.item-card { padding: 0.9rem 0; border-bottom: 1px solid var(--cream-dark); }
+.item-card:last-child { border-bottom: none; }
+.item-card h4 { font-family: 'Syne', sans-serif; font-size: 0.83rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.3rem; }
+.item-card p { font-size: 0.78rem; color: var(--ink-light); line-height: 1.65; font-weight: 300; }
+.item-source { font-size: 0.62rem; font-weight: 500; color: var(--ink-light); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.3rem; display: block; }
+.item-tags { margin-top: 0.35rem; display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.item-tag { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); background: rgba(232,64,10,0.07); padding: 2px 5px; }
+
+/* BOTTOM ROW */
+.bottom-row { display: grid; grid-template-columns: 1fr 1.25fr; padding: 2.5rem 0 3rem; }
+.reading-col { padding-right: 2.5rem; border-right: 1px solid var(--border); }
+.strategic-col { padding-left: 2.5rem; }
+
+.reading-item { display: flex; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--cream-dark); align-items: flex-start; }
+.reading-item:last-child { border-bottom: none; }
+.reading-num { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--accent); opacity: 0.22; line-height: 1; flex-shrink: 0; width: 1.6rem; }
+.reading-text h4 { font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.2rem; }
+.reading-text h4 a { color: var(--ink); text-decoration: none; }
+.reading-text h4 a:hover { color: var(--accent); }
+.reading-text span { font-size: 0.65rem; color: var(--ink-light); letter-spacing: 0.06em; text-transform: uppercase; }
+
+.strategic-box { background: var(--navy); color: var(--white); padding: 1.75rem 1.75rem 1.75rem 2rem; position: relative; }
+.strategic-box::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--accent); }
+.strategic-kicker { font-family: 'Syne', sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+.strategic-intro { font-size: 0.8rem; color: rgba(255,255,255,0.65); line-height: 1.75; font-weight: 300; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.actions-label { font-family: 'Syne', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 0.75rem; }
+.action-item { display: flex; gap: 0.75rem; padding: 0.7rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); align-items: flex-start; }
+.action-item:last-child { border-bottom: none; }
+.action-bullet { width: 6px; height: 6px; background: var(--accent); flex-shrink: 0; margin-top: 0.4rem; }
+.action-item p { font-size: 0.78rem; color: rgba(255,255,255,0.72); line-height: 1.6; font-weight: 300; }
+
+footer { background: var(--ink); color: rgba(255,255,255,0.35); padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; letter-spacing: 0.06em; font-weight: 300; }
+.footer-brand { font-family: 'Syne', sans-serif; font-weight: 700; color: rgba(255,255,255,0.55); font-size: 0.75rem; }
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+@media (max-width: 800px) {
+  .masthead-top { padding: 0.6rem 1.25rem; flex-direction: column; gap: 0.25rem; text-align: center; }
+  .masthead-main { grid-template-columns: 1fr; padding: 1.5rem 1.25rem 0; }
+  .masthead-meta { text-align: left; }
+  .container { padding: 0 1.25rem; }
+  .top-grid { grid-template-columns: 1fr; }
+  .story-lead { padding-right: 0; border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; }
+  .stories-sidebar { padding-left: 0; }
+  .sections-grid { grid-template-columns: 1fr; }
+  .section-col { border-right: none; border-bottom: 1px solid var(--border); }
+  .section-col:nth-child(odd), .section-col:nth-child(even) { padding-left: 0; padding-right: 0; }
+  .bottom-row { grid-template-columns: 1fr; }
+  .reading-col { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 2rem; }
+  .strategic-col { padding-left: 0; padding-top: 2rem; }
+  footer { flex-direction: column; gap: 0.4rem; text-align: center; padding: 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="loader-bar"></div>
+  <p>Digest wird geladen …</p>
+</div>
+
+<div id="error">
+  <h2>Digest nicht verfügbar</h2>
+  <p id="error-msg">Das JSON konnte nicht geladen werden.</p>
+</div>
+
+<div id="content">
+
+  <header class="masthead">
+    <div class="masthead-top">
+      <span class="masthead-kicker">Swiss Digital Banking Digest</span>
+      <span class="masthead-sources">Quellen: FINMA · SNB · Fintechnews.ch · HSLU</span>
+    </div>
+    <div class="masthead-main">
+      <div>
+        <div class="masthead-logo">Swiss Digital<br><span>Banking</span> Digest</div>
+        <div class="masthead-sub">Automatische Marktbeobachtung · n8n &amp; Claude Sonnet</div>
+      </div>
+      <div class="masthead-meta">
+        <div class="kw-badge" id="meta-kw">KW –</div>
+        <span class="kw-date" id="meta-date">—</span>
+      </div>
+    </div>
+    <nav class="nav-strip">
+      <a class="nav-item" href="#top-stories">Top Stories</a>
+      <a class="nav-item" href="#regulatory">Regulierung</a>
+      <a class="nav-item" href="#market">Markt</a>
+      <a class="nav-item" href="#ai_tech">KI &amp; Tech</a>
+      <a class="nav-item" href="#international">International</a>
+      <a class="nav-item" href="#lesen">Lesen</a>
+      <a class="nav-item" href="#strategie">Strategisch</a>
+    </nav>
+  </header>
+
+  <section id="top-stories">
+    <div class="container">
+      <div class="top-stories-wrap">
+        <div class="section-label">Top 3 Entwicklungen</div>
+        <div class="top-grid">
+          <div class="story-lead" id="lead-story"></div>
+          <div class="stories-sidebar" id="minor-stories"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="sections-grid" id="sections-grid"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="bottom-row">
+        <div class="reading-col" id="lesen">
+          <div class="section-header">
+            <div class="section-icon"><svg viewBox="0 0 16 16"><path d="M2 2h5v12H2zM9 2h5v12H9z"/></svg></div>
+            <span class="section-title">Leseempfehlungen</span>
+          </div>
+          <div id="reading-list"></div>
+        </div>
+        <div class="strategic-col" id="strategie">
+          <div class="section-header">
+            <div class="section-icon"><svg viewBox="0 0 16 16"><path d="M8 1l1.5 4.5H14l-3.5 2.5 1.5 4.5L8 10 4 12.5l1.5-4.5L2 5.5h4.5z"/></svg></div>
+            <span class="section-title">Strategische Implikationen</span>
+          </div>
+          <div class="strategic-box">
+            <div class="strategic-kicker" id="strategic-kicker">Strategisch</div>
+            <div class="strategic-intro" id="strategic-intro"></div>
+            <div class="actions-label">Key Actions</div>
+            <div id="strategic-actions"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="footer-brand">multikanal.ch</span>
+    <span id="footer-info">Erstellt mit n8n &amp; Claude Sonnet</span>
+    <a href="https://banking.multikanal.ch" target="_blank" rel="noopener">banking.multikanal.ch ↗</a>
+  </footer>
+
+</div>
+
+<script>
+const REPO_BASE = 'https://raw.githubusercontent.com/Zimphi75/multikanal/main/data/';
+
+const SECTION_META = {
+  regulatory: { label: 'Regulierung & Compliance', icon: '<path d="M8 1l1 3h3l-2.5 2 1 3L8 7.5 5.5 9l1-3L4 4h3z"/>' },
+  market:     { label: 'Markt & Wettbewerb',       icon: '<path d="M1 13l3-5 3 2 3-6 3 4 2-3v8H1z"/>' },
+  ai_tech:    { label: 'KI & Technologie',          icon: '<path d="M5 1h6v3H5zM3 4h10v2H3zM2 7h12v2H2zM1 10h14v5H1z"/>' },
+  international: { label: 'Internationale Entwicklungen', icon: '<circle cx="8" cy="8" r="6.5" fill="none" stroke="white" stroke-width="1.2"/><path d="M8 1.5c0 0-3 3-3 6.5s3 6.5 3 6.5 3-3 3-6.5-3-6.5-3-6.5z" fill="none" stroke="white" stroke-width="1.2"/><path d="M1.5 8h13" stroke="white" stroke-width="1.2"/>' }
+};
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function fmtDate(str) {
+  if (!str) return '';
+  try { return new Date(str).toLocaleDateString('de-CH', {day:'numeric', month:'long', year:'numeric'}); }
+  catch(e) { return str; }
+}
+
+function renderMeta(m) {
+  const kw = m.kw || '–';
+  const yr = m.year || '';
+  document.getElementById('meta-kw').textContent = `KW ${kw}`;
+  const from = fmtDate(m.date_from), to = fmtDate(m.date_to);
+  document.getElementById('meta-date').textContent = from && to ? `${from} – ${to}` : fmtDate(m.published_at);
+  document.getElementById('footer-info').textContent = `Erstellt mit n8n & Claude Sonnet · KW ${kw}/${yr}`;
+  document.title = `Swiss Digital Banking Digest · KW ${kw}/${yr} · multikanal.ch`;
+}
+
+function renderTopStories(stories) {
+  if (!stories?.length) return;
+  const lead = stories[0];
+  const kf = (lead.key_figures || []).slice(0,3).map(k =>
+    `<div class="key-fig"><span class="key-fig-val">${esc(k.value)}</span><span class="key-fig-label">${esc(k.label_de)}</span></div>`
+  ).join('');
+  document.getElementById('lead-story').innerHTML =
+    `<div class="story-rank-big">01</div>
+     <h2>${esc(lead.headline_de)}</h2>
+     <p>${esc(lead.body_de)}</p>
+     ${kf ? `<div class="key-figures">${kf}</div>` : ''}
+     <div class="story-meta">
+       <span class="story-cat">${esc(lead.category)}</span>
+       <span class="story-source-tag">${esc(lead.source_name)} · ${esc(lead.source_date)}</span>
+     </div>`;
+
+  const sb = document.getElementById('minor-stories');
+  stories.slice(1).forEach((s, i) => {
+    sb.innerHTML +=
+      `<div class="story-minor">
+         <div class="story-rank-small">0${i+2} &nbsp;${esc(s.category)}</div>
+         <h3>${esc(s.headline_de)}</h3>
+         <p>${esc(s.body_de)}</p>
+         <span class="story-source-tag">${esc(s.source_name)} · ${esc(s.source_date)}</span>
+       </div>`;
+  });
+}
+
+function renderSections(sections) {
+  const grid = document.getElementById('sections-grid');
+  ['regulatory','market','ai_tech','international'].forEach(id => {
+    const sec = sections.find(s => s.id === id);
+    if (!sec) return;
+    const meta = SECTION_META[id] || { label: sec.title_de || id, icon: '' };
+    const col = document.createElement('div');
+    col.className = 'section-col';
+    col.id = id;
+    const items = (sec.items || []).slice(0,4).map(item => {
+      const src = (item.sources || [])[0]?.name || '';
+      const tags = (item.tags || []).slice(0,3).map(t => `<span class="item-tag">${esc(t)}</span>`).join('');
+      return `<div class="item-card">
+        <h4>${esc(item.headline_de)}</h4>
+        <p>${esc(item.body_de)}</p>
+        ${src ? `<span class="item-source">${esc(src)}</span>` : ''}
+        ${tags ? `<div class="item-tags">${tags}</div>` : ''}
+      </div>`;
+    }).join('');
+    col.innerHTML =
+      `<div class="section-header">
+         <div class="section-icon"><svg viewBox="0 0 16 16" fill="white">${meta.icon}</svg></div>
+         <span class="section-title">${esc(meta.label)}</span>
+       </div>${items}`;
+    grid.appendChild(col);
+  });
+}
+
+function renderReading(items) {
+  const el = document.getElementById('reading-list');
+  (items || []).slice(0,5).forEach((item, i) => {
+    const title = item.title_de || item.title_en || '';
+    const url = item.url || '#';
+    el.innerHTML +=
+      `<div class="reading-item">
+         <div class="reading-num">${String(i+1).padStart(2,'0')}</div>
+         <div class="reading-text">
+           <h4><a href="${esc(url)}" target="_blank" rel="noopener">${esc(title)}</a></h4>
+           ${item.source ? `<span>${esc(item.source)}</span>` : ''}
+         </div>
+       </div>`;
+  });
+}
+
+function renderStrategic(si) {
+  if (!si) return;
+  if (si.target_de) document.getElementById('strategic-kicker').textContent = `Für ${si.target_de}`;
+  if (si.body_de)   document.getElementById('strategic-intro').textContent  = si.body_de;
+  const el = document.getElementById('strategic-actions');
+  (si.key_actions || []).forEach(a => {
+    el.innerHTML +=
+      `<div class="action-item">
+         <div class="action-bullet"></div>
+         <p>${esc(a.action_de)}</p>
+       </div>`;
+  });
+}
+
+// Calculate ISO week number
+function getISOWeek(date) {
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return { kw: Math.ceil((((d - yearStart) / 86400000) + 1) / 7), year: d.getUTCFullYear() };
+}
+
+// Try slugs: current week, then up to 4 previous weeks
+function getCandidateSlugs() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('kw')) return [params.get('kw')];
+
+  const slugs = [];
+  const now = new Date();
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i * 7);
+    const { kw, year } = getISOWeek(d);
+    slugs.push(`kw${kw}-${year}`);
+  }
+  return slugs;
+}
+
+async function tryFetch(slug) {
+  const url = `${REPO_BASE}${slug}.json?t=${Date.now()}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function loadDigest() {
+  const slugs = getCandidateSlugs();
+  let data = null;
+
+  for (const slug of slugs) {
+    try {
+      data = await tryFetch(slug);
+      break;
+    } catch(e) {
+      console.log(`Not found: ${slug}`);
+    }
+  }
+
+  if (!data) {
+    document.getElementById('error-msg').textContent = 'Kein Digest verfügbar.';
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error').style.display = 'block';
+    return;
+  }
+
+  renderMeta(data.meta || {});
+  renderTopStories(data.top_stories || []);
+  renderSections(data.sections || []);
+  renderReading(data.reading_recommendations || []);
+  renderStrategic(data.strategic_implications || null);
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+}
+
+loadDigest();
+</script>
+</body>
+</html>
