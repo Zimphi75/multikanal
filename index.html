@@ -77,7 +77,15 @@ body {
   font-family: var(--font-mono); font-size: 0.58rem;
   letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light);
 }
+.kw-nav { display: flex; align-items: center; gap: 0.3rem; justify-content: flex-end; }
 .kw-value { font-size: 1.05rem; font-weight: bold; }
+.kw-nav-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 1.1rem; line-height: 1; padding: 0 0.1rem;
+  color: var(--text-light); transition: color 0.15s;
+}
+.kw-nav-btn:hover:not(:disabled) { color: var(--gold); }
+.kw-nav-btn:disabled { opacity: 0.18; cursor: default; }
 .header-controls { display: flex; align-items: center; gap: 0.5rem; }
 .toggle-group { display: flex; border: 1px solid var(--border); overflow: hidden; }
 .toggle-btn {
@@ -400,7 +408,11 @@ footer a:hover { text-decoration: underline; }
       <div class="header-right">
         <div class="kw-block">
           <div class="kw-label">Kalenderwoche</div>
-          <div class="kw-value" id="meta-kw">—</div>
+          <div class="kw-nav">
+            <button class="kw-nav-btn" id="btn-prev-kw" disabled title="Vorwoche">‹</button>
+            <div class="kw-value" id="meta-kw">—</div>
+            <button class="kw-nav-btn" id="btn-next-kw" disabled title="Nächste Woche">›</button>
+          </div>
           <div class="kw-label" id="meta-date"></div>
         </div>
         <div class="header-controls">
@@ -488,6 +500,7 @@ const REPO_BASE = 'https://raw.githubusercontent.com/Zimphi75/multikanal/main/da
 let currentLang = 'de';
 let activeTag = null;
 let globalData = null;
+let currentSlug = null;
 
 const UI_STRINGS = {
   de: {
@@ -803,6 +816,46 @@ document.addEventListener('click', e => {
   if (e.target.closest('#btn-theme')) { toggleTheme(); return; }
 });
 
+/* ── WEEK NAVIGATION ── */
+function adjacentSlug(slug, delta) {
+  const m = slug.match(/kw(\d+)-(\d+)/);
+  if (!m) return null;
+  const kw = parseInt(m[1]), year = parseInt(m[2]);
+  const jan4 = new Date(year, 0, 4);
+  const dayOfWeek = jan4.getDay() || 7;
+  const week1Mon = new Date(jan4);
+  week1Mon.setDate(jan4.getDate() - dayOfWeek + 1);
+  const targetThu = new Date(week1Mon);
+  targetThu.setDate(week1Mon.getDate() + (kw - 1 + delta) * 7 + 3);
+  const { kw: nKw, year: nYear } = getISOWeek(targetThu);
+  return `kw${nKw}-${nYear}`;
+}
+async function slugExists(slug) {
+  try {
+    const r = await fetch(`${REPO_BASE}${slug}.json`);
+    return r.ok;
+  } catch { return false; }
+}
+async function setupWeekNav(slug) {
+  const prevS = adjacentSlug(slug, -1);
+  const nextS = adjacentSlug(slug, +1);
+  const [prevOk, nextOk] = await Promise.all([
+    prevS ? slugExists(prevS) : Promise.resolve(false),
+    nextS ? slugExists(nextS) : Promise.resolve(false)
+  ]);
+  const btnPrev = document.getElementById('btn-prev-kw');
+  const btnNext = document.getElementById('btn-next-kw');
+  btnPrev.disabled = !prevOk;
+  btnNext.disabled = !nextOk;
+  if (prevOk) btnPrev.onclick = () => navigateToSlug(prevS);
+  if (nextOk) btnNext.onclick = () => navigateToSlug(nextS);
+}
+function navigateToSlug(slug) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('kw', slug);
+  window.location.href = url.toString();
+}
+
 /* ── ISO WEEK ── */
 function getISOWeek(date) {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -832,6 +885,7 @@ async function loadDigest() {
       const res = await fetch(`${REPO_BASE}${slug}.json?t=${Date.now()}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       globalData = await res.json();
+      currentSlug = slug;
       break;
     } catch(e) { console.log(`Not found: ${slug}`); }
   }
@@ -844,6 +898,7 @@ async function loadDigest() {
   renderAll(globalData);
   document.getElementById('loading').style.display = 'none';
   document.getElementById('content').style.display = 'block';
+  setupWeekNav(currentSlug);
 }
 
 /* ── MARKET DATA ── */
