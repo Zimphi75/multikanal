@@ -36,7 +36,7 @@ Automatisch generierter Wochendigest zu Digitalisierung, Regulierung und Innovat
 - **DE/EN** – alle Inhalte zweisprachig, automatische Browser-Spracherkennung beim ersten Besuch
 - **Tag-Filter** – klickbare Tags filtern Artikel seitenübergreifend
 - **Deeplinks** – alle Headlines verlinken auf die Originalquelle
-- **Impressum & Datenschutz** – nDSG-konforme Seiten mit Dark Mode & DE/EN-Toggle unter `/impressum.html` und `/datenschutz.html`
+- **Impressum & Datenschutz** – nDSG-konforme Seiten mit Dark Mode & DE/EN-Toggle unter `/impressum.html` und `/datenschutz.html`; inkl. Haftungsausschluss, Quellenangaben (RSS-Feeds) und Projekthinweis
 
 ## JSON-Format
 
