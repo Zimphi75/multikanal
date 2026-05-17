@@ -18,6 +18,7 @@ Automatisch generierter Wochendigest zu Digitalisierung, Regulierung und Innovat
 /
 ├── index.html          # Komplette Website (HTML/CSS/JS, kein Build-Step)
 ├── CNAME               # Custom Domain: banking.multikanal.ch
+├── splash.jpg          # Hero-Bild (optional für Header-Hintergrund)
 └── data/
     └── kw20-2026.json  # Wöchentliche Digest-Dateien (automatisch generiert)
 ```
@@ -25,7 +26,7 @@ Automatisch generierter Wochendigest zu Digitalisierung, Regulierung und Innovat
 ## Website-Features
 
 - **Automatische KW-Erkennung** – lädt immer den neusten verfügbaren Digest
-- **Automatische KW-Erkennung** – lädt immer den neusten verfügbaren Digest
+- **Typografie** – Inter (Google Fonts) durchgehend für Body und Labels, passend zur mobilen App
 - **Live-Marktdaten** – BTC/CHF (CoinGecko), SMI & SPI (Yahoo Finance), alle 5 Min. aktualisiert; BTC mit Zeitraum-Toggle (1T/1W/1M) und Sparkline-Chart, SMI/SPI fix auf 1T
 - **Metrics Row** – 4 Kennzahlen aus verschiedenen Artikeln, verlinkt auf den jeweiligen Artikel
 - **Newspaper-Layout** – Lead Story, Minor Stories, 2×2-Spalten-Layout (CSS Subgrid, pixelgenaue Zeilenausrichtung); alle Sektions- und Bereichstitel einheitlich gross (Monospace, 1.45rem)
