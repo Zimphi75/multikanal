@@ -26,6 +26,7 @@ Automatisch generierter Wochendigest zu Digitalisierung, Regulierung und Innovat
 ## Website-Features
 
 - **Automatische KW-Erkennung** – lädt immer den neusten verfügbaren Digest
+- **KW-Navigation** – Pfeile ‹ › im Header blättern zwischen verfügbaren Ausgaben; Buttons aktivieren sich automatisch sobald ein JSON für die Vor-/Folgewoche existiert
 - **Typografie** – Inter (Google Fonts) durchgehend für Body und Labels, passend zur mobilen App
 - **Live-Marktdaten** – BTC/CHF (CoinGecko), SMI & SPI (Yahoo Finance), alle 5 Min. aktualisiert; BTC mit Zeitraum-Toggle (1T/1W/1M) und Sparkline-Chart, SMI/SPI fix auf 1T
 - **Metrics Row** – 4 Kennzahlen aus verschiedenen Artikeln, verlinkt auf den jeweiligen Artikel
