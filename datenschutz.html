@@ -90,16 +90,44 @@ footer a:hover { text-decoration: underline; }
 
   <div class="lang-de">
     <h1>Datenschutzerklärung</h1>
-    <div class="subtitle">banking.multikanal.ch · Stand: Mai 2026</div>
+    <div class="subtitle">Swiss Digital Banking Digest · Stand: Juni 2026</div>
 
-    <h2>Verantwortliche Stelle</h2>
-    <p>Philipp Zimmermann<br>E-Mail: <a href="mailto:info@multikanal.ch">info@multikanal.ch</a></p>
+    <p>Swiss Digital Banking Digest («die App») ist eine unabhängige App, entwickelt von Philipp Zimmermann (multikanal.ch). Diese Datenschutzerklärung erläutert, wie die App mit Ihren Daten umgeht.</p>
 
-    <h2>Grundsatz</h2>
-    <p>Die Applikation verwendet keine Cookies, kein Tracking und keine Analyse-Tools von Drittanbietern. Es werden keine personenbezogenen Daten erhoben oder gespeichert.</p>
+    <h2>1. Erhobene Daten</h2>
+    <p>Die App erhebt grundsätzlich keine personenbezogenen Daten. Alle lokal gespeicherten Informationen (Anzeigeeinstellungen, Sprache, Lesefortschritt, gespeicherte Artikel) verbleiben ausschliesslich auf Ihrem Gerät. Wenn Sie Push-Benachrichtigungen aktivieren, wird ein anonymes Geräte-Token auf unserem Server gespeichert (siehe Abschnitt 5).</p>
 
-    <h2>Externe Datenquellen</h2>
-    <p>Die redaktionellen Inhalte der Applikation werden wöchentlich automatisiert aus öffentlich zugänglichen RSS-Feeds der folgenden Quellen aggregiert und mit KI-Unterstützung aufbereitet:</p>
+    <h2>2. Lokale Datenspeicherung</h2>
+    <p>Folgende Daten werden lokal auf Ihrem Gerät gespeichert und verlassen dieses nicht:</p>
+    <ul>
+      <li><strong>Einstellungen:</strong> Farbschema (Hell/Dunkel/System) und Sprache (Deutsch/Englisch/System)</li>
+      <li><strong>Lesefortschritt:</strong> welche Artikel Sie bereits gesehen oder weggewischt haben</li>
+      <li><strong>Gespeicherte Artikel:</strong> Ihre persönliche «Später lesen»-Liste</li>
+      <li><strong>Installations-ID:</strong> eine anonyme, zufällig generierte UUID, die ausschliesslich lokal verwendet wird</li>
+    </ul>
+
+    <h2>3. Weitergabe von Daten</h2>
+    <p>Wir geben Ihre Daten nicht an Dritte zu Marketing- oder Werbezwecken weiter. Inhaltsdaten (Digest-Ausgaben, Artikel) werden von unserem Supabase-Backend bezogen; dabei werden keine Nutzeridentifikatoren übertragen.</p>
+
+    <h2>4. Analyse und Tracking</h2>
+    <p>Die App enthält keine Analyse-Frameworks, Werbe-SDKs oder Tracking-Technologien. Es werden keine Nutzungsprofile, Geräte-Identifikatoren oder Verhaltensauswertungen erstellt.</p>
+
+    <h2>5. Push-Benachrichtigungen (optional)</h2>
+    <p>Wenn Sie Push-Benachrichtigungen aktivieren, wird ein gerätespezifisches FCM-Token (Firebase Cloud Messaging) generiert und zusammen mit der Plattformangabe (iOS/Android) auf unserem Server (Supabase) gespeichert. Das Token enthält keine personenbezogenen Informationen und dient ausschliesslich zur Zustellung von Benachrichtigungen über neue Digest-Ausgaben. Sie können Push-Benachrichtigungen jederzeit in den App-Einstellungen deaktivieren.</p>
+
+    <h2>6. Absturzberichte</h2>
+    <p>In Produktions-Builds übermittelt die App bei unbehandelten Fehlern anonymisierte Absturzberichte (Fehlermeldung, Stack-Trace, Gerätekategorie, OS-Version) an Firebase Crashlytics. Diese Daten enthalten keine personenbezogenen Informationen und dienen ausschliesslich der Fehlerbehebung. In Debug-Builds ist diese Funktion deaktiviert.</p>
+
+    <h2>7. Externe Dienste</h2>
+    <ul>
+      <li><strong>Supabase</strong> (<a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a>): Backend für die Auslieferung der Inhalte sowie für die optionale Speicherung von Push-Tokens. Datenschutzerklärung: <a href="https://supabase.com/privacy" target="_blank" rel="noopener">supabase.com/privacy</a></li>
+      <li><strong>Firebase Cloud Messaging</strong> (Google LLC): Versand von Push-Benachrichtigungen. Datenschutzerklärung: <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">firebase.google.com/support/privacy</a></li>
+      <li><strong>Firebase Crashlytics</strong> (Google LLC): Anonymisierte Absturzberichte. Datenschutzerklärung: <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">firebase.google.com/support/privacy</a></li>
+    </ul>
+    <p>Es sind keine Werbe-SDKs, Social-Media-Integrationen oder sonstigen Drittdienste eingebunden.</p>
+
+    <h2>8. Redaktionelle Quellen (RSS-Feeds)</h2>
+    <p>Die Inhalte der App werden wöchentlich automatisiert aus öffentlich zugänglichen RSS-Feeds der folgenden Quellen aggregiert und mit KI-Unterstützung aufbereitet. Es werden dabei keine Nutzerdaten an diese Quellen übertragen:</p>
     <ul>
       <li><strong>FINMA</strong> – Eidg. Finanzmarktaufsicht · <a href="https://finma.ch" target="_blank" rel="noopener">finma.ch</a></li>
       <li><strong>Schweizerische Nationalbank (SNB)</strong> · <a href="https://snb.ch" target="_blank" rel="noopener">snb.ch</a></li>
@@ -108,27 +136,63 @@ footer a:hover { text-decoration: underline; }
       <li><strong>Netzwoche</strong> · <a href="https://netzwoche.ch" target="_blank" rel="noopener">netzwoche.ch</a></li>
       <li><strong>HSLU IFZ Retail Banking Blog</strong> · <a href="https://blog.hslu.ch/retailbanking" target="_blank" rel="noopener">blog.hslu.ch/retailbanking</a></li>
     </ul>
-    <h2>Rechte der betroffenen Personen</h2>
-    <p>Gemäss Schweizer Datenschutzgesetz (nDSG) haben Sie das Recht auf Auskunft, Berichtigung und Löschung Ihrer Daten. Da die Applikation keine personenbezogenen Daten erhebt, ist die Ausübung dieses Rechtes hinfällig.</p>
-    <p>Für Anfragen: <a href="mailto:info@multikanal.ch">info@multikanal.ch</a></p>
 
-    <h2>Haftungsausschluss</h2>
-    <p>Die Inhalte der Applikation dienen ausschliesslich der redaktionellen Information. Sie stellen keine Anlageberatung, Finanzanalyse oder Handelsempfehlung dar. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte wird keine Gewähr übernommen.</p>
-    <p>Dies ist ein privates Projekt mit dem Ziel, das Geschehen im Bereich Digital Banking Schweiz besser im Blick zu behalten.</p>
+    <h2>9. Externe Links</h2>
+    <p>Die App enthält Links zu externen Quellen (Quellenangaben in Artikeln). Für die Datenschutzpraktiken dieser Websites sind deren Betreiber verantwortlich.</p>
+
+    <h2>10. Minderjährige</h2>
+    <p>Da die App ohne Anmeldung und ohne Erfassung personenbezogener Daten funktioniert, gilt der Datenschutz für alle Nutzerinnen und Nutzer gleichermassen, unabhängig vom Alter.</p>
+
+    <h2>11. Anwendbares Recht</h2>
+    <p>Es gilt das Schweizerische Datenschutzgesetz (DSG). Soweit die App in der EU genutzt wird, beachten wir ergänzend die Anforderungen der DSGVO.</p>
+
+    <h2>12. Änderungen</h2>
+    <p>Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen. Das Datum «Stand» oben wird bei Änderungen aktualisiert.</p>
+
+    <h2>13. Kontakt</h2>
+    <p>Bei Fragen zur Datenschutzerklärung wenden Sie sich an: <a href="mailto:info@multikanal.ch">info@multikanal.ch</a></p>
   </div>
 
   <div class="lang-en" hidden>
     <h1>Privacy Policy</h1>
-    <div class="subtitle">banking.multikanal.ch · As of May 2026</div>
+    <div class="subtitle">Swiss Digital Banking Digest · As of June 2026</div>
 
-    <h2>Controller</h2>
-    <p>Philipp Zimmermann<br>Email: <a href="mailto:info@multikanal.ch">info@multikanal.ch</a></p>
+    <p>Swiss Digital Banking Digest ("the App") is an independent app developed by Philipp Zimmermann (multikanal.ch). This privacy policy explains how the App handles your data.</p>
 
-    <h2>Principle</h2>
-    <p>This application uses no cookies, no tracking, and no third-party analytics tools. No personal data is collected or stored.</p>
+    <h2>1. Data Collected</h2>
+    <p>The App does not collect personal data as a matter of principle. All locally stored information (display settings, language, reading progress, saved articles) remains exclusively on your device. If you enable push notifications, an anonymous device token is stored on our server (see Section 5).</p>
 
-    <h2>External Data Sources</h2>
-    <p>The editorial content of this application is aggregated weekly from publicly accessible RSS feeds of the following sources and prepared with AI assistance:</p>
+    <h2>2. Local Data Storage</h2>
+    <p>The following data is stored locally on your device and does not leave it:</p>
+    <ul>
+      <li><strong>Settings:</strong> colour scheme (Light/Dark/System) and language (German/English/System)</li>
+      <li><strong>Reading progress:</strong> which articles you have already seen or swiped away</li>
+      <li><strong>Saved articles:</strong> your personal "Read later" list</li>
+      <li><strong>Installation ID:</strong> an anonymous, randomly generated UUID used exclusively on-device</li>
+    </ul>
+
+    <h2>3. Data Sharing</h2>
+    <p>We do not share your data with third parties for marketing or advertising purposes. Content data (digest editions, articles) is fetched from our Supabase backend; no user identifiers are transmitted in the process.</p>
+
+    <h2>4. Analytics and Tracking</h2>
+    <p>The App contains no analytics frameworks, advertising SDKs, or tracking technologies. No usage profiles, device identifiers, or behavioural analytics are created.</p>
+
+    <h2>5. Push Notifications (optional)</h2>
+    <p>If you enable push notifications, a device-specific FCM token (Firebase Cloud Messaging) is generated and stored on our server (Supabase) together with the platform identifier (iOS/Android). The token contains no personal information and is used solely to deliver notifications about new digest editions. You can disable push notifications at any time in the App settings.</p>
+
+    <h2>6. Crash Reports</h2>
+    <p>In production builds, the App transmits anonymised crash reports (error message, stack trace, device category, OS version) to Firebase Crashlytics when unhandled errors occur. These data contain no personal information and are used solely for debugging purposes. This feature is disabled in debug builds.</p>
+
+    <h2>7. Third-Party Services</h2>
+    <ul>
+      <li><strong>Supabase</strong> (<a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a>): Backend for content delivery and optional storage of push tokens. Privacy policy: <a href="https://supabase.com/privacy" target="_blank" rel="noopener">supabase.com/privacy</a></li>
+      <li><strong>Firebase Cloud Messaging</strong> (Google LLC): Delivery of push notifications. Privacy policy: <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">firebase.google.com/support/privacy</a></li>
+      <li><strong>Firebase Crashlytics</strong> (Google LLC): Anonymised crash reports. Privacy policy: <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">firebase.google.com/support/privacy</a></li>
+    </ul>
+    <p>No advertising SDKs, social media integrations, or other third-party services are included.</p>
+
+    <h2>8. Editorial Sources (RSS Feeds)</h2>
+    <p>The App's content is aggregated weekly from publicly accessible RSS feeds of the following sources and prepared with AI assistance. No user data is transmitted to these sources in the process:</p>
     <ul>
       <li><strong>FINMA</strong> – Swiss Financial Market Supervisory Authority · <a href="https://finma.ch" target="_blank" rel="noopener">finma.ch</a></li>
       <li><strong>Swiss National Bank (SNB)</strong> · <a href="https://snb.ch" target="_blank" rel="noopener">snb.ch</a></li>
@@ -137,13 +201,21 @@ footer a:hover { text-decoration: underline; }
       <li><strong>Netzwoche</strong> · <a href="https://netzwoche.ch" target="_blank" rel="noopener">netzwoche.ch</a></li>
       <li><strong>HSLU IFZ Retail Banking Blog</strong> · <a href="https://blog.hslu.ch/retailbanking" target="_blank" rel="noopener">blog.hslu.ch/retailbanking</a></li>
     </ul>
-    <h2>Rights of Data Subjects</h2>
-    <p>Under the Swiss Federal Act on Data Protection (nFADP), you have the right to access, correct, and delete your data. As this application collects no personal data, the exercise of these rights is moot.</p>
-    <p>For enquiries: <a href="mailto:info@multikanal.ch">info@multikanal.ch</a></p>
 
-    <h2>Disclaimer</h2>
-    <p>The content of this application is for editorial and informational purposes only. It does not constitute investment advice, financial analysis, or a recommendation to trade. No guarantee is given for the accuracy, completeness, or timeliness of the content.</p>
-    <p>This is a private project aimed at keeping track of developments in the Swiss digital banking space.</p>
+    <h2>9. External Links</h2>
+    <p>The App contains links to external sources (article references). The operators of those websites are responsible for their own data protection practices.</p>
+
+    <h2>10. Minors</h2>
+    <p>As the App operates without registration and without collecting personal data, the same data protection applies to all users regardless of age.</p>
+
+    <h2>11. Applicable Law</h2>
+    <p>Swiss data protection law (DSG/FADP) applies. Where the App is used within the EU, we additionally observe the requirements of the GDPR.</p>
+
+    <h2>12. Changes</h2>
+    <p>We reserve the right to update this privacy policy as needed. The "As of" date above will be updated when changes are made.</p>
+
+    <h2>13. Contact</h2>
+    <p>For questions about this privacy policy, please contact: <a href="mailto:info@multikanal.ch">info@multikanal.ch</a></p>
   </div>
 
 </div>
